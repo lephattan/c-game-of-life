@@ -76,6 +76,7 @@ int main(void)
     // Setup and init first screen
     // NOTE: land on GAMEPLAY screen directly for development speed
     currentScreen = GAMEPLAY;
+    InitGameplayScreen();
     // InitLogoScreen();
 
 #if defined(PLATFORM_WEB)
