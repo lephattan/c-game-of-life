@@ -59,6 +59,7 @@ int main(void)
 {
     // Initialization
     //---------------------------------------------------------
+    SetTraceLogLevel(LOG_DEBUG);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE); // Window configuration flags
     InitWindow(screenWidth, screenHeight, "game of life");
 
