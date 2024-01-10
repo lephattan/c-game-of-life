@@ -78,6 +78,7 @@ void UpdateGameplayScreen(void);
 void DrawGameplayScreen(void);
 void UnloadGameplayScreen(void);
 int FinishGameplayScreen(void);
+void DrawGameGrid(void);
 
 //----------------------------------------------------------------------------------
 // Ending Screen Functions Declaration
