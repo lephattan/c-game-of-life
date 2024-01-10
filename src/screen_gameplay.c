@@ -26,6 +26,7 @@
 #include "raylib.h"
 #include "screens.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -36,6 +37,14 @@ static int isPlaying = 1;
 
 static int rows = 50;
 static int cols = 80;
+
+typedef enum CellStatus { DEAD = 0, ALIVE } CellStatus;
+struct Cell
+{
+    CellStatus status;
+};
+
+static struct Cell *GridOfLife[50][80];
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
@@ -46,6 +55,20 @@ void InitGameplayScreen(void)
     // TODO: Initialize GAMEPLAY screen variables here!
     framesCounter = 0;
     finishScreen = 0;
+    int row, col;
+    for (row = 0; row < rows; row++)
+    {
+        for (col = 0; col < cols; col++)
+        {
+            struct Cell *cell = malloc(sizeof(struct Cell));
+            if (cell == NULL)
+            {
+                TraceLog(LOG_FATAL, "Unable to allocate memory for Cell of Life");
+            }
+            cell->status = ALIVE;
+            GridOfLife[row][col] = cell;
+        }
+    }
 }
 
 // Gameplay Screen Update logic
@@ -91,7 +114,7 @@ void DrawGameplayScreen(void)
 void DrawGameGrid(void)
 {
     int gap = 1;
-    int borderThickness = 1;
+    int borderThickness = 0;
     int paddingTop = 100;
     int paddingBottom = 50;
     int paddingLeft = 50;
@@ -141,7 +164,6 @@ void DrawGameGrid(void)
 
     // Colors
     Color borderColor = MAROON;
-    Color cellFill = WHITE;
 
     TraceLog(LOG_DEBUG, "GRID: Grid initialized");
     TraceLog(LOG_DEBUG, "\t> Display box center: %d, %d", centerX, centerY);
@@ -158,6 +180,16 @@ void DrawGameGrid(void)
     {
         for (col = 0; col < cols; col++)
         {
+            Color cellFill;
+            struct Cell *cell = GridOfLife[row][col];
+            if (cell->status == DEAD)
+            {
+                cellFill = BLACK;
+            }
+            else
+            {
+                cellFill = WHITE;
+            }
             // Draw outer rectangle
             int posX = gridPosX + col * (cellWidth + gap);
             int posY = gridPosY + row * cellHeight + row * gap;
@@ -178,6 +210,16 @@ void UnloadGameplayScreen(void)
 
     // Pause the game when screen is unloaded
     isPlaying = 0;
+
+    TraceLog(LOG_DEBUG, "Freeing Cells of Life memory");
+    int row, col;
+    for (row = 0; row < rows; row++)
+    {
+        for (col = 0; col < cols; col++)
+        {
+            free(GridOfLife[row][col]);
+        }
+    }
 }
 
 // Gameplay Screen should finish?
