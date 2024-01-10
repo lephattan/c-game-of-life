@@ -1,5 +1,4 @@
------------------------------------
-
+---
 _DISCLAIMER:_
 
 Welcome to **raylib game template**!
@@ -11,18 +10,23 @@ All the sections defined by `$(Data to Fill)` are expected to be edited and fill
 This template has been created to be used with raylib (www.raylib.com) and it's licensed under an unmodified zlib/libpng license.
 
 _Copyright (c) 2014-2024 Ramon Santamaria ([@raysan5](https://twitter.com/raysan5))_
+---
 
------------------------------------
 ## Getting Started with this template
-- After extracting the zip, the parent folder `raylib-game-template` should exist in the same directory as `raylib` itself.  So your file structure should look like this:
-    - Some parent directory
-        - `raylib`
-            - the contents of https://github.com/raysan5/raylib
-        - `raylib-game-template`
-            - this `README.md` and all other raylib-game-template files
+
+- After extracting the zip, the parent folder `raylib-game-template` should exist in the same directory as `raylib` itself. So your file structure should look like this:
+  - Some parent directory
+    - `raylib`
+      - the contents of https://github.com/raysan5/raylib
+    - `raylib-game-template`
+      - this `README.md` and all other raylib-game-template files
 - If using Visual Studio, open projects/VS2022/raylib-game-template.sln
 - Select on `raylib_game` in the solution explorer, then in the toolbar at the top, click `Project` > `Set as Startup Project`
-- Now you're all set up!  Click `Local Windows Debugger` with the green play arrow and the project will run.
+- Now you're all set up! Click `Local Windows Debugger` with the green play arrow and the project will run.
+
+## Installation
+
+- https://github.com/raysan5/raylib/issues/706
 
 ## $(Game Title)
 
@@ -34,16 +38,17 @@ $(Your Game Description)
 
 ### Features
 
- - $(Game Feature 01)
- - $(Game Feature 02)
- - $(Game Feature 03)
+- $(Game Feature 01)
+- $(Game Feature 02)
+- $(Game Feature 03)
 
 ### Controls
 
 Keyboard:
- - $(Game Control 01)
- - $(Game Control 02)
- - $(Game Control 03)
+
+- $(Game Control 01)
+- $(Game Control 02)
+- $(Game Control 03)
 
 ### Screenshots
 
@@ -51,15 +56,15 @@ _TODO: Show your game to the world, animated GIFs recommended!._
 
 ### Developers
 
- - $(Developer 01) - $(Role/Tasks Developed)
- - $(Developer 02) - $(Role/Tasks Developed)
- - $(Developer 03) - $(Role/Tasks Developed)
+- $(Developer 01) - $(Role/Tasks Developed)
+- $(Developer 02) - $(Role/Tasks Developed)
+- $(Developer 03) - $(Role/Tasks Developed)
 
 ### Links
 
- - YouTube Gameplay: $(YouTube Link)
- - itch.io Release: $(itch.io Game Page)
- - Steam Release: $(Steam Game Page)
+- YouTube Gameplay: $(YouTube Link)
+- itch.io Release: $(itch.io Game Page)
+- Steam Release: $(Steam Game Page)
 
 ### License
 
@@ -67,4 +72,4 @@ This game sources are licensed under an unmodified zlib/libpng license, which is
 
 $(Additional Licenses)
 
-*Copyright (c) $(Year) $(User Name) ($(User Twitter/GitHub Name))*
+_Copyright (c) $(Year) $(User Name) ($(User Twitter/GitHub Name))_

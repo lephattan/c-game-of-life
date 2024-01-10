@@ -29,7 +29,7 @@
 PLATFORM              ?= PLATFORM_DESKTOP
 
 # Define project variables
-PROJECT_NAME          ?= raylib_game
+PROJECT_NAME          ?= cgameoflife
 PROJECT_VERSION       ?= 1.0
 PROJECT_BUILD_PATH    ?= .
 
@@ -41,7 +41,7 @@ RAYLIB_INCLUDE_PATH   ?= /usr/local/include
 RAYLIB_LIB_PATH       ?= /usr/local/lib
 
 # Library type compilation: STATIC (.a) or SHARED (.so/.dll)
-RAYLIB_LIBTYPE        ?= STATIC
+RAYLIB_LIBTYPE        ?= SHARED
 
 # Build mode for project: DEBUG or RELEASE
 BUILD_MODE            ?= RELEASE
@@ -400,7 +400,7 @@ endif
 # Define source code object files required
 #------------------------------------------------------------------------------------------------
 PROJECT_SOURCE_FILES ?= \
-    raylib_game.c \
+    cgameoflife.c \
     screen_logo.c \
     screen_title.c \
     screen_options.c \
