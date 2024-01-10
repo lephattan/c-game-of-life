@@ -107,22 +107,23 @@ void DrawGameGrid(void)
     int displayPosY = paddingTop;
     DrawRectangle(displayPosX, displayPosY, displayWidth, displayHeight, GRAY);
 
-    int gapSpace = (rows - 1) * gap;
+    int gapSpaceX = (cols - 1) * gap;
+    int gapSpaceY = (rows - 1) * gap;
 
     // Cell size
     // Calculate cell size based the smaller side of display box
-    int smallSide;
+    unsigned int cellWidth, cellHeight;
     if (displayWidth > displayHeight)
     {
-        smallSide = displayHeight;
+        cellHeight = (displayHeight - gapSpaceY) / rows;
+        cellWidth = cellHeight;
     }
     else
     {
-        smallSide = displayWidth;
+        cellWidth = (displayWidth - gapSpaceX) / cols;
+        cellHeight = cellWidth;
     }
 
-    unsigned int cellWidth = (smallSide - gapSpace) / rows;
-    unsigned int cellHeight = cellWidth;
     unsigned int cellInnerWidth = cellWidth - borderThickness * 2;
     unsigned int cellInnerHeight = cellHeight - borderThickness * 2;
 
@@ -144,6 +145,7 @@ void DrawGameGrid(void)
 
     TraceLog(LOG_DEBUG, "GRID: Grid initialized");
     TraceLog(LOG_DEBUG, "\t> Display box center: %d, %d", centerX, centerY);
+    TraceLog(LOG_DEBUG, "\t> Display box size: %dx%d", displayWidth, displayHeight);
     TraceLog(LOG_DEBUG, "\t> Grid size: %dx%d", rows, cols);
     TraceLog(LOG_DEBUG, "\t> Grid position: %d, %d", gridPosX, gridPosY);
     TraceLog(LOG_DEBUG, "\t> Padding: %d %d %d %d", paddingTop, paddingRight, paddingBottom, paddingLeft);
