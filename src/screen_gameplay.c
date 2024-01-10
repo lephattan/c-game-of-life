@@ -34,6 +34,8 @@ static int framesCounter = 0;
 static int finishScreen = 0;
 static int isPlaying = 1;
 
+static int rows = 50;
+static int cols = 80;
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
@@ -88,12 +90,8 @@ void DrawGameplayScreen(void)
 
 void DrawGameGrid(void)
 {
-    int rows = 8;
-    int cols = 5;
-    int cellWidth;
-    int cellHeight;
-    int gap = 5;
-    int borderThickness = 0;
+    int gap = 1;
+    int borderThickness = 1;
     int paddingTop = 100;
     int paddingBottom = 50;
     int paddingLeft = 50;
@@ -102,15 +100,16 @@ void DrawGameGrid(void)
     int w = GetScreenWidth();
     int h = GetScreenHeight();
 
+    // Display box
     int displayWidth = w - paddingLeft - paddingRight;
     int displayHeight = h - paddingTop - paddingBottom;
     int displayPosX = paddingLeft;
     int displayPosY = paddingTop;
     DrawRectangle(displayPosX, displayPosY, displayWidth, displayHeight, GRAY);
 
-    // GRID
-    int centerX = displayPosX + displayWidth / 2;
-    int centerY = displayPosY + displayHeight / 2;
+    int gapSpace = (rows - 1) * gap;
+
+    // Cell size
     // Calculate cell size based the smaller side of display box
     int smallSide;
     if (displayWidth > displayHeight)
@@ -121,26 +120,45 @@ void DrawGameGrid(void)
     {
         smallSide = displayWidth;
     }
-    int gapSpace = (rows + 1) * gap;
-    cellWidth = (smallSide - gapSpace) / rows;
-    cellHeight = cellWidth;
-    int gridPosX = centerX - (rows * cellWidth + gapSpace) / 2 + gap;
-    int gridPosY = centerY - (cols * cellHeight + gapSpace) / 2 + gap;
 
-    int cellInnerWidth = cellWidth - borderThickness * 2;
-    int cellInnerHeight = cellHeight - borderThickness * 2;
+    unsigned int cellWidth = (smallSide - gapSpace) / rows;
+    unsigned int cellHeight = cellWidth;
+    unsigned int cellInnerWidth = cellWidth - borderThickness * 2;
+    unsigned int cellInnerHeight = cellHeight - borderThickness * 2;
 
-    Color borderColor = RED;
+    // GRID
+    int centerX = displayPosX + displayWidth / 2;
+    int centerY = displayPosY + displayHeight / 2;
+    DrawCircle(centerX, centerY, 10.0, RED);
+
+    int gridWidth = cols * cellWidth + (cols - 1) * gap;
+    int gridHeight = rows * cellHeight + (rows - 1) * gap;
+
+    int gridPosX = centerX - gridWidth / 2;
+    int gridPosY = centerY - gridHeight / 2;
+    DrawCircle(gridPosX, gridPosY, 10.0, BLUE);
+
+    // Colors
+    Color borderColor = MAROON;
     Color cellFill = WHITE;
 
-    int i, j;
-    for (i = 0; i < rows; i++)
+    TraceLog(LOG_DEBUG, "GRID: Grid initialized");
+    TraceLog(LOG_DEBUG, "\t> Display box center: %d, %d", centerX, centerY);
+    TraceLog(LOG_DEBUG, "\t> Grid size: %dx%d", rows, cols);
+    TraceLog(LOG_DEBUG, "\t> Grid position: %d, %d", gridPosX, gridPosY);
+    TraceLog(LOG_DEBUG, "\t> Padding: %d %d %d %d", paddingTop, paddingRight, paddingBottom, paddingLeft);
+    TraceLog(LOG_DEBUG, "\t> Border: %d", borderThickness);
+    TraceLog(LOG_DEBUG, "\t> Cell size: %dx%d", cellWidth, cellHeight);
+
+    // Draw grid and cells
+    int row, col;
+    for (row = 0; row < rows; row++)
     {
-        for (j = 0; j < cols; j++)
+        for (col = 0; col < cols; col++)
         {
             // Draw outer rectangle
-            int posX = gridPosX + i * cellHeight + i * gap;
-            int posY = gridPosY + j * cellWidth + j * gap;
+            int posX = gridPosX + col * (cellWidth + gap);
+            int posY = gridPosY + row * cellHeight + row * gap;
             DrawRectangle(posX, posY, cellWidth, cellHeight, borderColor);
 
             // Draw inner rectangle
