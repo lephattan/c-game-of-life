@@ -25,12 +25,14 @@
 
 #include "raylib.h"
 #include "screens.h"
+#include <stdio.h>
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
 static int framesCounter = 0;
 static int finishScreen = 0;
+static int isPlaying = 1;
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -55,22 +57,40 @@ void UpdateGameplayScreen(void)
         // finishScreen = 1;
         PlaySound(fxCoin);
     }
+    if (IsKeyPressed(KEY_P))
+    {
+        if (isPlaying == 1)
+        {
+            isPlaying = 0;
+        }
+        else
+        {
+            isPlaying = 1;
+        }
+    }
 }
 
 // Gameplay Screen Draw logic
 void DrawGameplayScreen(void)
 {
     // TODO: Draw GAMEPLAY screen here!
-    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), PURPLE);
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), BLACK);
     Vector2 pos = {20, 10};
     DrawTextEx(font, "GAMEPLAY SCREEN", pos, font.baseSize * 3.0f, 4, MAROON);
     DrawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20, MAROON);
+
+    char isPlayingStr[] = "ISPLAYING: 1";
+    sprintf(isPlayingStr, "ISPLAYING: %d", isPlaying);
+    DrawText(isPlayingStr, 230, 320, 20, MAROON);
 }
 
 // Gameplay Screen Unload logic
 void UnloadGameplayScreen(void)
 {
     // TODO: Unload GAMEPLAY screen variables here!
+
+    // Pause the game when screen is unloaded
+    isPlaying = 0;
 }
 
 // Gameplay Screen should finish?
