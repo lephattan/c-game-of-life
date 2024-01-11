@@ -216,15 +216,15 @@ void CyleOfLife()
                     }
                     break;
                 case ALIVE:
-                    if (surroundingLife <= 1)
+                    if (surroundingLife < 2)
                     {
                         newCell->status = DEAD;
                     }
-                    else if (surroundingLife > 4)
+                    else if (surroundingLife > 3)
                     {
                         newCell->status = DEAD;
                     }
-                    else if (surroundingLife >= 2 && surroundingLife <= 3)
+                    else if (surroundingLife == 2 || surroundingLife == 3)
                     {
                         // it continue to live
                     }
