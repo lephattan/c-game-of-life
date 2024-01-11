@@ -76,6 +76,8 @@ void InitGameplayScreen(void)
     framesCounter = 0;
     finishScreen = 0;
     cycleCounter = 0;
+    gameSpeed = 10;
+    isPlaying = 1;
     int row, col;
     for (row = 0; row < rows; row++)
     {
@@ -184,6 +186,7 @@ int AdjacentAliveCells(int cellRow, int cellCol)
 // The check every cell in the GridOfLife and apply Rules of life to it
 void CyleOfLife()
 {
+    struct Cell *newGrid[rows][cols];
     int row, col;
     for (row = 0; row < rows; row++)
     {
@@ -191,22 +194,33 @@ void CyleOfLife()
         {
             struct Cell *cell = GridOfLife[row][col];
             int surroundingLife = AdjacentAliveCells(row, col);
+
+            struct Cell *newCell = malloc(sizeof(struct Cell));
+            if (newCell == NULL)
+            {
+                TraceLog(LOG_FATAL, "Unable to allocate memory for Cell of Life");
+            }
+            newCell->status = cell->status;
+            newCell->outerRec = cell->outerRec;
+            newCell->innerRec = cell->innerRec;
+            newCell->border = cell->border;
+
             switch (cell->status)
             {
                 case DEAD:
                     if (surroundingLife == 3)
                     {
-                        cell->status = ALIVE;
+                        newCell->status = ALIVE;
                     }
                     break;
                 case ALIVE:
                     if (surroundingLife <= 1)
                     {
-                        cell->status = DEAD;
+                        newCell->status = DEAD;
                     }
                     else if (surroundingLife > 4)
                     {
-                        cell->status = DEAD;
+                        newCell->status = DEAD;
                     }
                     else if (surroundingLife >= 2 && surroundingLife <= 3)
                     {
@@ -216,6 +230,15 @@ void CyleOfLife()
                 default:
                     break;
             }
+            newGrid[row][col] = newCell;
+        }
+    }
+    for (row = 0; row < rows; row++)
+    {
+        for (col = 0; col < cols; col++)
+        {
+            free(GridOfLife[row][col]);
+            GridOfLife[row][col] = newGrid[row][col];
         }
     }
     framesCounter = 0;
@@ -237,6 +260,11 @@ void UpdateGameplayScreen(void)
         {
             isPlaying = 1;
         }
+    }
+    if (IsKeyPressed(KEY_R))
+    {
+        UnloadGameplayScreen();
+        InitGameplayScreen();
     }
 
     if (IsKeyPressedRepeat(KEY_UP) || IsKeyPressed(KEY_UP))
