@@ -32,7 +32,7 @@
 // Magic numbers
 //----------------------------------------------------------------------------------
 #define MIN_GAMESPEED 1
-#define MAX_GAMESPEED 20
+#define MAX_GAMESPEED 40
 #define GRID_ROWS 50
 #define GRID_COLS 100
 const int TARGET_FPS = 60;
