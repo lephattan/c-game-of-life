@@ -29,12 +29,21 @@
 #include <stdlib.h>
 
 //----------------------------------------------------------------------------------
+// Magic numbers
+//----------------------------------------------------------------------------------
+#define MIN_GAMESPEED 1
+#define MAX_GAMESPEED 20
+
+//----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
+// Game controll
 static int framesCounter = 0;
 static int finishScreen = 0;
 static int isPlaying = 1;
+static int gameSpeed = 10;
 
+// Grid and cells
 static int rows = 50;
 static int cols = 80;
 static int gap = 1;
@@ -61,7 +70,6 @@ static struct Cell *GridOfLife[50][80];
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
 {
-    // TODO: Initialize GAMEPLAY screen variables here!
     framesCounter = 0;
     finishScreen = 0;
     int row, col;
@@ -74,10 +82,36 @@ void InitGameplayScreen(void)
             {
                 TraceLog(LOG_FATAL, "Unable to allocate memory for Cell of Life");
             }
-            cell->status = ALIVE;
+            cell->status = DEAD;
             cell->border = 0;
             GridOfLife[row][col] = cell;
         }
+    }
+}
+
+// Increase game speed and keep it in limit
+void IncreaseGameSpeed()
+{
+    if (gameSpeed + 1 >= MAX_GAMESPEED)
+    {
+        gameSpeed = MAX_GAMESPEED;
+    }
+    else
+    {
+        gameSpeed += 1;
+    }
+}
+
+// Descrease game speed
+void DescreaseGameSpeed()
+{
+    if (gameSpeed - 1 <= MIN_GAMESPEED)
+    {
+        gameSpeed = MIN_GAMESPEED;
+    }
+    else
+    {
+        gameSpeed -= 1;
     }
 }
 
@@ -97,6 +131,14 @@ void UpdateGameplayScreen(void)
             isPlaying = 1;
         }
     }
+    if (IsKeyPressedRepeat(KEY_UP) || IsKeyPressed(KEY_UP))
+    {
+        IncreaseGameSpeed();
+    }
+    else if (IsKeyPressedRepeat(KEY_DOWN) || IsKeyPressed(KEY_DOWN))
+    {
+        DescreaseGameSpeed();
+    }
 }
 
 // Gameplay Screen Draw logic
@@ -106,8 +148,9 @@ void DrawGameplayScreen(void)
     int h = GetScreenHeight();
     DrawRectangle(0, 0, w, h, BLACK);
     Vector2 pos = {20, 10};
-    DrawTextEx(font, "GAMEPLAY SCREEN", pos, font.baseSize * 3.0f, 4, MAROON);
-    // DrawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20, MAROON);
+    char gameSpeedText[80] = "";
+    sprintf(gameSpeedText, "Gamespeed: %d", gameSpeed);
+    DrawTextEx(font, gameSpeedText, pos, font.baseSize * 2.0f, 4, MAROON);
 
     char isPlayingStr[] = "ISPLAYING: 1";
     sprintf(isPlayingStr, "ISPLAYING: %d", isPlaying);
