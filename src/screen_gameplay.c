@@ -33,6 +33,8 @@
 //----------------------------------------------------------------------------------
 #define MIN_GAMESPEED 1
 #define MAX_GAMESPEED 20
+#define GRID_ROWS 50
+#define GRID_COLS 100
 const int TARGET_FPS = 60;
 const bool INFINITE_GRID = true;
 
@@ -47,8 +49,8 @@ static int gameSpeed = 10;
 static int cycleCounter = 0;
 
 // Grid and cells
-const int rows = 50;
-const int cols = 80;
+const int rows = GRID_ROWS;
+const int cols = GRID_COLS;
 static int gap = 1;
 static int borderThickness = 2;
 static int paddingTop = 100;
@@ -65,7 +67,7 @@ struct Cell
     int border;
 };
 
-static struct Cell *GridOfLife[50][80];
+static struct Cell *GridOfLife[GRID_ROWS][GRID_COLS];
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
