@@ -86,12 +86,6 @@ void UpdateGameplayScreen(void)
 {
     // TODO: Update GAMEPLAY screen variables here!
 
-    // Press enter or tap to change to ENDING screen
-    if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
-    {
-        // finishScreen = 1;
-        PlaySound(fxCoin);
-    }
     if (IsKeyPressed(KEY_P))
     {
         if (isPlaying == 1)
@@ -121,6 +115,17 @@ void DrawGameplayScreen(void)
     DrawGameGrid();
 }
 
+void OnCellClick(struct Cell *cell)
+{
+    int newValue = cell->status + 1;
+    if (newValue > 1)
+    {
+        newValue = 0;
+    }
+    cell->status = newValue;
+    PlaySound(fxCoin);
+}
+
 void DrawGameGrid(void)
 {
 
@@ -128,6 +133,7 @@ void DrawGameGrid(void)
     int h = GetScreenHeight();
 
     struct Vector2 mousePos = GetMousePosition();
+    bool mouseClicked = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
     // Display box
     int displayWidth = w - paddingLeft - paddingRight;
@@ -189,6 +195,10 @@ void DrawGameGrid(void)
             if (CheckCollisionPointRec(mousePos, cell->outerRec))
             {
                 cell->border = borderThickness;
+                if (mouseClicked)
+                {
+                    OnCellClick(cell);
+                }
             }
             else
             {
