@@ -37,11 +37,20 @@ static int isPlaying = 1;
 
 static int rows = 50;
 static int cols = 80;
+static int gap = 1;
+static int borderThickness = 2;
+static int paddingTop = 100;
+static int paddingBottom = 50;
+static int paddingLeft = 50;
+static int paddingRight = 50;
 
 typedef enum CellStatus { DEAD = 0, ALIVE } CellStatus;
 struct Cell
 {
     CellStatus status;
+    struct Rectangle outerRec;
+    struct Rectangle innerRec;
+    int border;
 };
 
 static struct Cell *GridOfLife[50][80];
@@ -66,6 +75,7 @@ void InitGameplayScreen(void)
                 TraceLog(LOG_FATAL, "Unable to allocate memory for Cell of Life");
             }
             cell->status = ALIVE;
+            cell->border = 0;
             GridOfLife[row][col] = cell;
         }
     }
@@ -113,15 +123,11 @@ void DrawGameplayScreen(void)
 
 void DrawGameGrid(void)
 {
-    int gap = 1;
-    int borderThickness = 0;
-    int paddingTop = 100;
-    int paddingBottom = 50;
-    int paddingLeft = 50;
-    int paddingRight = 50;
 
     int w = GetScreenWidth();
     int h = GetScreenHeight();
+
+    struct Vector2 mousePos = GetMousePosition();
 
     // Display box
     int displayWidth = w - paddingLeft - paddingRight;
@@ -146,9 +152,6 @@ void DrawGameGrid(void)
         cellWidth = (displayWidth - gapSpaceX) / cols;
         cellHeight = cellWidth;
     }
-
-    unsigned int cellInnerWidth = cellWidth - borderThickness * 2;
-    unsigned int cellInnerHeight = cellHeight - borderThickness * 2;
 
     // GRID
     int centerX = displayPosX + displayWidth / 2;
@@ -175,6 +178,7 @@ void DrawGameGrid(void)
     TraceLog(LOG_DEBUG, "\t> Cell size: %dx%d", cellWidth, cellHeight);
 
     // Draw grid and cells
+
     int row, col;
     for (row = 0; row < rows; row++)
     {
@@ -182,6 +186,14 @@ void DrawGameGrid(void)
         {
             Color cellFill;
             struct Cell *cell = GridOfLife[row][col];
+            if (CheckCollisionPointRec(mousePos, cell->outerRec))
+            {
+                cell->border = borderThickness;
+            }
+            else
+            {
+                cell->border = 0;
+            }
             if (cell->status == DEAD)
             {
                 cellFill = BLACK;
@@ -193,12 +205,18 @@ void DrawGameGrid(void)
             // Draw outer rectangle
             int posX = gridPosX + col * (cellWidth + gap);
             int posY = gridPosY + row * cellHeight + row * gap;
-            DrawRectangle(posX, posY, cellWidth, cellHeight, borderColor);
+            struct Rectangle outerRec = {(float) posX, (float) posY, (float) cellWidth, (float) cellHeight};
+            cell->outerRec = outerRec;
+            DrawRectangleRec(cell->outerRec, borderColor);
 
             // Draw inner rectangle
-            int innerPosX = posX + borderThickness;
-            int innerPosY = posY + borderThickness;
-            DrawRectangle(innerPosX, innerPosY, cellInnerWidth, cellInnerHeight, cellFill);
+            unsigned int cellInnerWidth = cellWidth - cell->border * 2;
+            unsigned int cellInnerHeight = cellHeight - cell->border * 2;
+            int innerPosX = posX + cell->border;
+            int innerPosY = posY + cell->border;
+            struct Rectangle innerRec = {(float) innerPosX, (float) innerPosY, cellInnerWidth, cellInnerHeight};
+            cell->innerRec = innerRec;
+            DrawRectangleRec(cell->innerRec, cellFill);
         }
     }
 }
