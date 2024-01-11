@@ -34,6 +34,7 @@
 #define MIN_GAMESPEED 1
 #define MAX_GAMESPEED 20
 const int TARGET_FPS = 60;
+const bool INFINITE_GRID = true;
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -146,6 +147,27 @@ int AdjacentAliveCells(int cellRow, int cellCol)
     {
         int offsetRow = cellRow + OffsetArray[i].x;
         int offsetCol = cellCol + OffsetArray[i].y;
+
+        if (INFINITE_GRID)
+        {
+            if (offsetRow < 0)
+            {
+                offsetRow = rows - 1;
+            }
+            if (offsetRow > rows - 1)
+            {
+                offsetRow = 0;
+            }
+
+            if (offsetCol < 0)
+            {
+                offsetCol = cols - 1;
+            }
+            if (offsetCol > cols - 1)
+            {
+                offsetCol = 0;
+            }
+        }
         if (offsetRow >= 0 && offsetRow < rows && offsetCol >= 0 && offsetCol < cols)
         {
             // TraceLog(LOG_DEBUG, "Offset x: %d, offset y: %d", offsetRow, offsetCol);
