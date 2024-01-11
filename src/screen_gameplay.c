@@ -43,6 +43,7 @@ static int framesCounter = 0;
 static int finishScreen = 0;
 static int isPlaying = 1;
 static int gameSpeed = 10;
+static int cycleCounter = 0;
 
 // Grid and cells
 const int rows = 50;
@@ -73,6 +74,7 @@ void InitGameplayScreen(void)
 {
     framesCounter = 0;
     finishScreen = 0;
+    cycleCounter = 0;
     int row, col;
     for (row = 0; row < rows; row++)
     {
@@ -195,14 +197,13 @@ void CyleOfLife()
         }
     }
     framesCounter = 0;
+    cycleCounter++;
 }
 
 // Gameplay Screen Update logic
 void UpdateGameplayScreen(void)
 {
     // TODO: Update GAMEPLAY screen variables here!
-
-    framesCounter++;
 
     if (IsKeyPressed(KEY_P))
     {
@@ -225,6 +226,11 @@ void UpdateGameplayScreen(void)
         DescreaseGameSpeed();
     }
 
+    if (!isPlaying)
+    {
+        return;
+    }
+    framesCounter++;
     if (ShouldStartNextCycle())
     {
         CyleOfLife();
@@ -241,6 +247,10 @@ void DrawGameplayScreen(void)
     char gameSpeedText[80] = "";
     sprintf(gameSpeedText, "Gamespeed: %d", gameSpeed);
     DrawTextEx(font, gameSpeedText, pos, font.baseSize * 2.0f, 4, MAROON);
+
+    char cycleText[80] = "";
+    sprintf(cycleText, "Number of cycle: %d", cycleCounter);
+    DrawText(cycleText, pos.x, pos.y + font.baseSize + 20, font.baseSize * 1.5f, MAROON);
 
     char isPlayingStr[] = "ISPLAYING: 1";
     sprintf(isPlayingStr, "ISPLAYING: %d", isPlaying);
