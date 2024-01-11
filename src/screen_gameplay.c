@@ -36,7 +36,7 @@
 #define GRID_ROWS 50
 #define GRID_COLS 100
 const int TARGET_FPS = 60;
-const bool INFINITE_GRID = true;
+const bool INFINITE_GRID = false;
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -79,7 +79,7 @@ void InitGameplayScreen(void)
     finishScreen = 0;
     cycleCounter = 0;
     gameSpeed = 10;
-    isPlaying = 1;
+    isPlaying = 0;
     int row, col;
     for (row = 0; row < rows; row++)
     {
@@ -268,6 +268,10 @@ void UpdateGameplayScreen(void)
         UnloadGameplayScreen();
         InitGameplayScreen();
     }
+    if (IsKeyPressed(KEY_RIGHT) || IsKeyPressedRepeat(KEY_RIGHT))
+    {
+        CyleOfLife();
+    }
 
     if (IsKeyPressedRepeat(KEY_UP) || IsKeyPressed(KEY_UP))
     {
@@ -282,6 +286,7 @@ void UpdateGameplayScreen(void)
     {
         return;
     }
+    // Only run if the game is playing
     framesCounter++;
     if (ShouldStartNextCycle())
     {
