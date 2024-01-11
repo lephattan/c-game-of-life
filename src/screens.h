@@ -39,6 +39,8 @@ extern Font font;
 extern Music music;
 extern Sound fxCoin;
 
+extern const int TARGET_FPS;
+
 #ifdef __cplusplus
 extern "C" {            // Prevents name mangling of functions
 #endif

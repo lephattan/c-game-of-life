@@ -33,6 +33,7 @@
 //----------------------------------------------------------------------------------
 #define MIN_GAMESPEED 1
 #define MAX_GAMESPEED 20
+const int TARGET_FPS = 60;
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -44,8 +45,8 @@ static int isPlaying = 1;
 static int gameSpeed = 10;
 
 // Grid and cells
-static int rows = 50;
-static int cols = 80;
+const int rows = 50;
+const int cols = 80;
 static int gap = 1;
 static int borderThickness = 2;
 static int paddingTop = 100;
@@ -115,10 +116,93 @@ void DescreaseGameSpeed()
     }
 }
 
+// Decide whether to run next life cycle
+bool ShouldStartNextCycle()
+{
+    float rate = (float) gameSpeed / 10;
+    int frameLimit = TARGET_FPS * 1 / rate;
+    TraceLog(LOG_DEBUG, "Frame limit: %d", frameLimit);
+    if (framesCounter >= frameLimit)
+    {
+        return true;
+    }
+    return false;
+}
+
+// Count alive cells surrounding given cell position
+int AdjacentAliveCells(int cellRow, int cellCol)
+{
+    int aliveCells = 0;
+    struct PositionOffset
+    {
+        int x;
+        int y;
+    };
+    struct PositionOffset OffsetArray[8] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+    int i;
+    for (i = 0; i < 8; i++)
+    {
+        int offsetRow = cellRow + OffsetArray[i].x;
+        int offsetCol = cellCol + OffsetArray[i].y;
+        if (offsetRow >= 0 && offsetRow < rows && offsetCol >= 0 && offsetCol < cols)
+        {
+            // TraceLog(LOG_DEBUG, "Offset x: %d, offset y: %d", offsetRow, offsetCol);
+            struct Cell *cell = GridOfLife[offsetRow][offsetCol];
+            if (cell->status == ALIVE)
+            {
+                aliveCells++;
+            }
+        }
+    }
+    return aliveCells;
+}
+
+// The check every cell in the GridOfLife and apply Rules of life to it
+void CyleOfLife()
+{
+    int row, col;
+    for (row = 0; row < rows; row++)
+    {
+        for (col = 0; col < cols; col++)
+        {
+            struct Cell *cell = GridOfLife[row][col];
+            int surroundingLife = AdjacentAliveCells(row, col);
+            switch (cell->status)
+            {
+                case DEAD:
+                    if (surroundingLife == 3)
+                    {
+                        cell->status = ALIVE;
+                    }
+                    break;
+                case ALIVE:
+                    if (surroundingLife <= 1)
+                    {
+                        cell->status = DEAD;
+                    }
+                    else if (surroundingLife > 4)
+                    {
+                        cell->status = DEAD;
+                    }
+                    else if (surroundingLife >= 2 && surroundingLife <= 3)
+                    {
+                        // it continue to live
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    framesCounter = 0;
+}
+
 // Gameplay Screen Update logic
 void UpdateGameplayScreen(void)
 {
     // TODO: Update GAMEPLAY screen variables here!
+
+    framesCounter++;
 
     if (IsKeyPressed(KEY_P))
     {
@@ -131,6 +215,7 @@ void UpdateGameplayScreen(void)
             isPlaying = 1;
         }
     }
+
     if (IsKeyPressedRepeat(KEY_UP) || IsKeyPressed(KEY_UP))
     {
         IncreaseGameSpeed();
@@ -138,6 +223,11 @@ void UpdateGameplayScreen(void)
     else if (IsKeyPressedRepeat(KEY_DOWN) || IsKeyPressed(KEY_DOWN))
     {
         DescreaseGameSpeed();
+    }
+
+    if (ShouldStartNextCycle())
+    {
+        CyleOfLife();
     }
 }
 
